@@ -1,4 +1,8 @@
 # Procedural-Mesh-Multithreaded-Benchmark
-comparison of procedural mesh manipulation processing
+comparison of different  procedural mesh processing
+- Classic single thread
+- Classic multithreaded
+- Burst Jobs
+- Burst Jobs + Mathematics
 
-![Alt text](/Screenshots/WinEditorCoreI5.png?raw=true "Optional Title")
+![Alt text](/Screenshots/WinEditorCoreI5.jpg?raw=true "Optional Title")
