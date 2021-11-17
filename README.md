@@ -10,4 +10,4 @@ WebGL build https://polyflow.xyz/web-gl/multithreaded-benchmark/
 ![Alt text](/Screenshots/WinEditorCoreI5.jpg?raw=true "Core i5 3.5 x 4 Editor")
 
 
-![Alt text](/Screenshots/WinPlayerCoreI5.jpg?raw=true "Core i5 3.5 x 4 Editor")
+![Alt text](/Screenshots/WinPLayerCoreI5.jpg?raw=true "Core i5 3.5 x 4 Editor")
