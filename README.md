@@ -5,4 +5,9 @@ comparison of different  procedural mesh processing
 - Burst Jobs
 - Burst Jobs + Mathematics
 
-![Alt text](/Screenshots/WinEditorCoreI5.jpg?raw=true "Optional Title")
+WebGL build https://polyflow.xyz/web-gl/multithreaded-benchmark/
+
+![Alt text](/Screenshots/WinEditorCoreI5.jpg?raw=true "Core i5 3.5 x 4 Editor")
+
+
+![Alt text](/Screenshots/WinPlayerCoreI5.jpg?raw=true "Core i5 3.5 x 4 Editor")
