@@ -38,7 +38,7 @@ public class ObjectSwitcher : MonoBehaviour
         for (int i = 0; i < objs.Length; i++) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(objs[i].scriptname, style, GUILayout.Width(260) );
-            GUILayout.Label(objs[i].info, style);
+            //GUILayout.Label(objs[i].info, style);
             GUILayout.EndHorizontal();
         }
     }

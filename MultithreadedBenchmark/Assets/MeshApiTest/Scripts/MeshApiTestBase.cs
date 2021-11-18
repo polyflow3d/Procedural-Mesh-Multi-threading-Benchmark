@@ -6,13 +6,20 @@ using System.Diagnostics;
 public class MeshAPITestBase : MonoBehaviour
 {
     public float size = 2;
-    Stopwatch sw;
-    public Material mat;
-    protected float minMs;
-    protected float maxMs;
-    protected float averageMs;
+    Stopwatch updateSW;
+    protected Stopwatch positionsw;
+    protected Stopwatch normalssw;
 
+
+    public Material mat;
+    public float updateMs;
+    public float minMs;
+    public float maxMs;
+    public float averageMs;
+    public float positionMs;
+    public float normalMs;
     protected int resolution = 220;
+    protected Mesh mesh;
 
     protected int[] GetTriangles() {
         int quadsCount = resolution * resolution;
@@ -60,38 +67,71 @@ public class MeshAPITestBase : MonoBehaviour
         Gizmos.DrawLine(p3, p0);
     }
 
-    float ms;
-    public string info;
-
     public virtual string scriptname  {
         get {
             return "not implemented";
         }
     }
 
-    protected void OnEnableBase() {
-        sw = Stopwatch.StartNew();
+    public virtual void onEnable() { 
+    
+    }
+
+    public virtual void PositionJob() { 
+
+    }
+
+    public virtual void NormalsJob() {
+
+    }
+
+    public virtual void FillMesh() { 
+    
+    }
+
+    private void OnEnable() {
+        onEnable();
+        updateSW = Stopwatch.StartNew();
+        positionsw = Stopwatch.StartNew();
+        normalssw = Stopwatch.StartNew();
         minMs = float.MaxValue;
         maxMs = float.MinValue;
         averageMs = -1;
     }
 
-    protected void UpdateBegin() {
-        sw.Start();
-    }
+    private void Update() {
+        updateSW.Start();
 
-    protected void UpdateEnd() {
-        ms = sw.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
-        sw.Stop();
-        sw.Reset();
-        minMs = Mathf.Min(minMs, ms);
-        maxMs = Mathf.Max(minMs, ms);
+        positionsw.Start();
+        PositionJob();
+        positionsw.Stop();
+        positionMs = positionsw.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
+        positionsw.Reset();
+
+
+        normalssw.Start();
+        NormalsJob();
+        normalssw.Stop();
+        normalMs = normalssw.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
+        normalssw.Reset();
+
+
+
+        updateMs = updateSW.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
+        updateSW.Stop();
+        updateSW.Reset();
+        minMs = Mathf.Min(minMs, updateMs);
+        maxMs = Mathf.Max(minMs, updateMs);
         if (averageMs < 0) {
-            averageMs = ms;
+            averageMs = updateMs;
         } else {
-            averageMs = Mathf.Lerp(averageMs, ms, 0.5f);
+            averageMs = Mathf.Lerp(averageMs, updateMs, 0.5f);
         }
-        info = string.Format("current:{0}   min:{1}   max:{2}   average:{3}",  ms.ToString("F2"), minMs.ToString("F2"), maxMs.ToString("F2"), averageMs.ToString("F2")) ;
+        FillMesh();
+        mesh.bounds = GetBounds();
+        if (mat != null) {
+            Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
+        }
     }
 
     public Bounds GetBounds() {
@@ -99,4 +139,6 @@ public class MeshAPITestBase : MonoBehaviour
         result.extents = new Vector3(size, size,size);
         return result;  
     } 
+
+   
 }

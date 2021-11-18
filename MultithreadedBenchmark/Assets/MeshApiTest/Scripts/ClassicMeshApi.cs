@@ -6,14 +6,13 @@ using Unity.Collections;
 using Unity.Jobs;
 
 public class ClassicMeshApi : MeshAPITestBase {
-    Mesh mesh;
- 
+
     Vector3[] positions;
     Vector3[] normals;
     Color[] colors;
     float timer;
 
-    private void SetupMesh() {
+    public override void onEnable() {
         mesh = new Mesh();
         mesh.indexFormat = IndexFormat.UInt32;
         int _vertsCount = GetVertsCount();
@@ -22,19 +21,10 @@ public class ClassicMeshApi : MeshAPITestBase {
         colors = new Color[_vertsCount];
         mesh.vertices = positions;
         mesh.triangles = GetTriangles();
-        //mesh.SetIndexBufferParams(_vertsCount, IndexFormat.UInt32);
     }
 
-    private void Start() {
-        SetupMesh();
-        OnEnableBase();
-    }
-
-    void  Update(){
-        UpdateBegin();
- 
+    public override void PositionJob() {
         float mult = 1f / resolution * size;
-
         //calc positions and color
         for (int y = 0; y <= resolution; y++) {
             for (int x = 0; x <= resolution; x++) {
@@ -48,7 +38,10 @@ public class ClassicMeshApi : MeshAPITestBase {
                 colors[vidx] = col;
             }
         }
+        timer += Time.deltaTime;
+    }
 
+    public override void NormalsJob() {
         //calc normals 
         for (int y = 0; y <= resolution; y++) {
             for (int x = 0; x <= resolution; x++) {
@@ -66,30 +59,19 @@ public class ClassicMeshApi : MeshAPITestBase {
                 Vector3 c1 = Vector3.Cross(_vibottom - _vi, _vileft - _vi);
                 Vector3 norm = Vector3.LerpUnclamped(c0, c1, 0.5f);
                 normals[vi] = norm;
-   
             }
         }
-
-        timer += Time.deltaTime;
-
-        mesh.SetVertices(positions) ;
-        mesh.SetNormals(normals);
-        mesh.SetColors(colors);
- 
- 
-       mesh.bounds = GetBounds();
-        if (mat != null) {
-            Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
-        }
-
-        UpdateEnd();
     }
-
+ 
+    public override void FillMesh() {
+        mesh.vertices = positions;
+        mesh.normals = normals;
+        mesh.colors = colors;
+    }
 
     public override string scriptname {
         get {
- 
-            return "Classic single threaded";
+            return "Classic single thread ";
         }
     }
 

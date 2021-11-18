@@ -12,13 +12,13 @@ using Unity.Burst.CompilerServices;
 public class BurstMathematicApi : MeshAPITestBase {
 
     [BurstCompile(CompileSynchronously = true)]
-    struct PositionJob : IJobParallelFor {
+    struct P_ositionJob : IJobParallelFor {
         public float mult;
         public float timer;
         NativeArray<int2> indices;
         NativeArray<Vertex> vertices;
  
-        public PositionJob(NativeArray<int2> indices, NativeArray<Vertex> vertices ) {
+        public P_ositionJob(NativeArray<int2> indices, NativeArray<Vertex> vertices ) {
             this.indices = indices;
             this.vertices = vertices;
             this.mult = 1;
@@ -39,7 +39,7 @@ public class BurstMathematicApi : MeshAPITestBase {
     }
  
     [BurstCompile(CompileSynchronously = true)]
-    struct NormalJob : IJobParallelFor {
+    struct N_ormalJob : IJobParallelFor {
         NativeArray<int2> indices;
 
         [NativeDisableParallelForRestriction]
@@ -47,7 +47,7 @@ public class BurstMathematicApi : MeshAPITestBase {
  
         readonly int resolution;
 
-        public NormalJob(NativeArray<int2> indices, NativeArray<Vertex> vertices,  int resolution) {
+        public N_ormalJob(NativeArray<int2> indices, NativeArray<Vertex> vertices,  int resolution) {
             this.indices = indices;
             this.vertices = vertices;
             this.resolution = resolution;
@@ -81,8 +81,8 @@ public class BurstMathematicApi : MeshAPITestBase {
         }
     }
 
-    PositionJob positionJob;
-    NormalJob normalJob;
+    P_ositionJob positionJob;
+    N_ormalJob normalJob;
 
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
     struct Vertex {
@@ -109,44 +109,39 @@ public class BurstMathematicApi : MeshAPITestBase {
         }
     }
  
-    Mesh mesh;
 
-    private void OnEnable() {
+    public override  void onEnable() {
         CreateArrays(resolution);
         int verticesCount = GetVertsCount();
         mesh = new Mesh();
   
         mesh.vertices = new Vector3[verticesCount];
         mesh.SetIndexBufferParams(verticesCount, IndexFormat.UInt32);
-        mesh.triangles = GetTriangles();
-       
+        mesh.triangles = GetTriangles(); 
         VertexAttributeDescriptor[] vad = new VertexAttributeDescriptor[3];
         vad[0] = new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3, stream:0);
         vad[1] = new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.Float32, 3, stream: 0);
         vad[2] = new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.Float32, 4, stream: 0);
         mesh.SetVertexBufferParams(verticesCount, vad );
-
-        positionJob = new PositionJob(indices, vertices);
-        normalJob = new NormalJob(indices,   vertices, resolution);
-        OnEnableBase();
+        positionJob = new P_ositionJob(indices, vertices);
+        normalJob = new N_ormalJob(indices,   vertices, resolution);
+ 
     }
 
-    private void Update() {
-        UpdateBegin();
+    public override void PositionJob() {
         positionJob.mult = 1f / resolution * size;
         JobHandle jh = positionJob.Schedule(vertices.Length, 100);
         jh.Complete();
+        positionJob.timer += Time.deltaTime;
+    }
+
+    public override void NormalsJob() {
         JobHandle jhn = normalJob.Schedule(vertices.Length, 100);
         jhn.Complete();
+    }
 
-        mesh.SetVertexBufferData<Vertex>(vertices, 0, 0, vertices.Length, stream:0, UnityEngine.Rendering.MeshUpdateFlags.DontRecalculateBounds);
-        mesh.bounds = GetBounds();
- 
-        if (mat) {
-            Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
-        }
-        positionJob.timer += Time.deltaTime;
-        UpdateEnd();
+    public override void FillMesh() {
+        mesh.SetVertexBufferData<Vertex>(vertices, 0, 0, vertices.Length, stream: 0, UnityEngine.Rendering.MeshUpdateFlags.DontRecalculateBounds);
     }
 
     private void OnDisable() {

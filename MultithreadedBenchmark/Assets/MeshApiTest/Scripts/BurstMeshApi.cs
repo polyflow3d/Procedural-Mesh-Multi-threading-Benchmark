@@ -11,14 +11,14 @@ using Unity.Burst;
 public class BurstMeshApi : MeshAPITestBase {
 
     [BurstCompile(CompileSynchronously = true)]
-    struct PositionJob : IJobParallelFor {
+    struct P_ositionJob : IJobParallelFor {
         public float mult;
         public float timer;
         NativeArray<Vector2Int> indices;
         NativeArray<Vector3> positions;
         NativeArray<Color> colors;
 
-        public PositionJob(NativeArray<Vector2Int> indices, NativeArray<Vector3> positions, NativeArray<Color> colors) {
+        public P_ositionJob(NativeArray<Vector2Int> indices, NativeArray<Vector3> positions, NativeArray<Color> colors) {
             this.indices = indices;
             this.positions = positions;
             this.colors = colors;
@@ -40,7 +40,7 @@ public class BurstMeshApi : MeshAPITestBase {
     }
  
     [BurstCompile(CompileSynchronously = true)]
-    struct NormalJob : IJobParallelFor {
+    struct N_ormalJob : IJobParallelFor {
         NativeArray<Vector2Int> indices;
 
         [NativeDisableParallelForRestriction]
@@ -48,7 +48,7 @@ public class BurstMeshApi : MeshAPITestBase {
         NativeArray<Vector3> normals;
         int resolution;
 
-        public NormalJob(NativeArray<Vector2Int> indices, NativeArray<Vector3> positions, NativeArray<Vector3> normals, int resolution) {
+        public N_ormalJob(NativeArray<Vector2Int> indices, NativeArray<Vector3> positions, NativeArray<Vector3> normals, int resolution) {
             this.indices = indices;
             this.positions = positions;
             this.normals = normals;
@@ -81,8 +81,8 @@ public class BurstMeshApi : MeshAPITestBase {
         }
     }
 
-    PositionJob positionJob;
-    NormalJob normalJob;
+    P_ositionJob _positionJob;
+    N_ormalJob _normalJob;
     NativeArray<Vector2Int> indices;
     NativeArray<Vector3> positions;
     NativeArray<Vector3> normals;
@@ -104,38 +104,34 @@ public class BurstMeshApi : MeshAPITestBase {
         colors = new NativeArray<Color>(vertsCount, Allocator.Persistent);
     }
  
-    Mesh mesh;
 
-    private void OnEnable() {
+    public override void onEnable() {
         CreateArrays(resolution);
-        positionJob = new PositionJob(indices, positions, colors);
-        normalJob = new NormalJob(indices, positions, normals, resolution);
+        _positionJob = new P_ositionJob(indices, positions, colors);
+        _normalJob = new N_ormalJob(indices, positions, normals, resolution);
         mesh = new Mesh();
         mesh.indexFormat = IndexFormat.UInt32;
         mesh.vertices = new Vector3[GetVertsCount()];
         mesh.triangles = GetTriangles();
- 
-        OnEnableBase();
     }
 
-    private void Update() {
-        UpdateBegin();
-        UnityEngine.Profiling.Profiler.BeginSample("Parallel threaded");
-        positionJob.mult = 1f / resolution * size;
-        JobHandle jh = positionJob.Schedule(positions.Length, 10);
+
+    public override void PositionJob() {
+        _positionJob.mult = 1f / resolution * size;
+        JobHandle jh = _positionJob.Schedule(positions.Length, 10);
         jh.Complete();
-        JobHandle jhn = normalJob.Schedule(normals.Length, 10);
+        _positionJob.timer += Time.deltaTime;
+    }
+
+    public override void NormalsJob() {
+        JobHandle jhn = _normalJob.Schedule(normals.Length, 10);
         jhn.Complete();
+    }
+
+    public override void FillMesh() {
         mesh.SetVertices(positions);
         mesh.SetNormals(normals);
         mesh.SetColors(colors);
-        mesh.bounds = GetBounds();
-        UnityEngine.Profiling.Profiler.EndSample();
-        if (mat) {
-            Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
-        }
-        positionJob.timer += Time.deltaTime;
-        UpdateEnd();
     }
 
     public override string scriptname {

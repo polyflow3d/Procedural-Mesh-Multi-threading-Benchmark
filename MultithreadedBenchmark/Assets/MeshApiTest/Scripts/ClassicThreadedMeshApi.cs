@@ -26,6 +26,8 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
         float mult;
         int resolution;
  
+ 
+
         public TClass(int idx, int tcount, Vector2Int[] indices, Vector3[] positions, Vector3[] normals, Color[] colors, int resolution) {
             this.indices = indices;
             this.positions = positions;
@@ -123,7 +125,6 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
     }
 
     public int threadsCount = 4;
-    Mesh mesh;
     Vector3[] positions;
     Vector3[] normals;
     Color[] colors;
@@ -131,21 +132,8 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
     float timer;
     TClass[] threads;
 
-    private void SetupMesh() {
-        mesh = new Mesh();
-        mesh.indexFormat = IndexFormat.UInt32;
-        int _vertsCount = GetVertsCount();
-        positions = new Vector3[_vertsCount];
-        normals = new Vector3[_vertsCount];
-        colors = new Color[_vertsCount];
-        mesh.vertices = positions;
-        mesh.triangles = GetTriangles();
-  
-    }
 
-
-
-    private void OnEnable() {
+    public override void onEnable() {
         threadsCount = System.Environment.ProcessorCount;
         //Mathf.Max(threadsCount, 1);
         int vertsCount = (resolution + 1) * (resolution + 1);
@@ -162,18 +150,22 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
         normals = new Vector3[vertsCount];
         colors = new Color[vertsCount];
 
-        SetupMesh();
-        OnEnableBase();
+        mesh = new Mesh();
+        mesh.indexFormat = IndexFormat.UInt32;
+        int _vertsCount = GetVertsCount();
+        positions = new Vector3[_vertsCount];
+        normals = new Vector3[_vertsCount];
+        colors = new Color[_vertsCount];
+        mesh.vertices = positions;
+        mesh.triangles = GetTriangles();
 
         threads = new TClass[threadsCount];
         for (int t = 0; t < threads.Length; t++) {
             threads[t] = new TClass(t, threadsCount, indices, positions, normals, colors, resolution);
         }
     }
- 
-    void  Update(){
-        UpdateBegin();
- 
+
+    public override void PositionJob() {
         float mult = 1f / resolution * size;
 
         for (int t = 0; t < threads.Length; t++) {
@@ -183,29 +175,26 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
         for (int t = 0; t < threads.Length; t++) {
             threads[t].mre_donepos.Wait();
         }
+        timer += Time.deltaTime;
+    }
+
+    public override void NormalsJob() {
 
         for (int t = 0; t < threads.Length; t++) {
             threads[t].StartNormalsJob();
         }
 
         for (int t = 0; t < threads.Length; t++) {
-           threads[t].mre_donenorm.Wait();
+            threads[t].mre_donenorm.Wait();
         }
+    }
 
-        timer += Time.deltaTime;
-
-        mesh.SetVertices(positions) ;
+    public override void FillMesh() {
+        mesh.SetVertices(positions);
         mesh.SetNormals(normals);
         mesh.SetColors(colors);
- 
- 
-        mesh.bounds = GetBounds();
-        if (mat != null) {
-            Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
-        }
-
-        UpdateEnd();
     }
+
 
     private void OnDisable() {
         for (int t = 0; t < threads.Length; t++) {
@@ -215,7 +204,7 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
 
     public override string scriptname {
         get {
-            return "Classic Multithreads";
+            return "Classic Multithreaded";
         }
     }
 
