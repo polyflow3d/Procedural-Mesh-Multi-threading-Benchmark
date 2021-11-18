@@ -152,7 +152,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 12
   mat: {fileID: 2100000, guid: c1124b9169478fb4f9c328fd5915fbad, type: 2}
-  info: '-'
+  updateMs: 0
+  minMs: 0
+  maxMs: 0
+  averageMs: 0
+  positionMs: 0
+  normalMs: 0
   threadsCount: -1
 --- !u!4 &184288868
 Transform:
@@ -291,7 +296,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 12
   mat: {fileID: 2100000, guid: c1124b9169478fb4f9c328fd5915fbad, type: 2}
-  info: 
+  updateMs: 0
+  minMs: 0
+  maxMs: 0
+  averageMs: 0
+  positionMs: 0
+  normalMs: 0
 --- !u!4 &1005842954
 Transform:
   m_ObjectHideFlags: 0
@@ -474,7 +484,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 12
   mat: {fileID: 2100000, guid: c1124b9169478fb4f9c328fd5915fbad, type: 2}
-  info: 
+  updateMs: 0
+  minMs: 0
+  maxMs: 0
+  averageMs: 0
+  positionMs: 0
+  normalMs: 0
 --- !u!4 &1902638284
 Transform:
   m_ObjectHideFlags: 0
@@ -520,7 +535,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 12
   mat: {fileID: 2100000, guid: c1124b9169478fb4f9c328fd5915fbad, type: 2}
-  info: 
+  updateMs: 0
+  minMs: 0
+  maxMs: 0
+  averageMs: 0
+  positionMs: 0
+  normalMs: 0
 --- !u!4 &1919440047
 Transform:
   m_ObjectHideFlags: 0
