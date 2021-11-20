@@ -6,7 +6,7 @@ using Unity.Collections;
 using System.Threading; 
 
 public class ClassicThreadedMeshApi : MeshAPITestBase {
-
+#if !UNITY_WEBGL
     public class TClass {
         private Thread thread;
         private ManualResetEventSlim mre_startpos;
@@ -207,5 +207,5 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
             return "Classic Multithreaded";
         }
     }
-
+#endif
 }

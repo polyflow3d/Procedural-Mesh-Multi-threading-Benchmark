@@ -20,7 +20,7 @@ public class MeshAPITestBase : MonoBehaviour
     protected int resolution = 220;
     protected Mesh mesh;
 
-# if !UNITY_WEBGL
+
 
     protected int[] GetTriangles() {
         int quadsCount = resolution * resolution;
@@ -129,9 +129,11 @@ public class MeshAPITestBase : MonoBehaviour
             averageMs = Mathf.Lerp(averageMs, updateMs, 0.5f);
         }
         FillMesh();
-        mesh.bounds = GetBounds();
-        if (mat != null) {
-            Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
+        if (mesh != null) {
+            mesh.bounds = GetBounds();
+            if (mat != null) {
+                Graphics.DrawMesh(mesh, transform.localToWorldMatrix, mat, 0);
+            }
         }
     }
 
@@ -141,6 +143,6 @@ public class MeshAPITestBase : MonoBehaviour
         return result;  
     } 
 
-    #endif
+
    
 }

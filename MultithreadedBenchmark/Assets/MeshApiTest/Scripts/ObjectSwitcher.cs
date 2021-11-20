@@ -47,7 +47,6 @@ public class ObjectSwitcher : MonoBehaviour
         DrawRow(" ", "Aver",  "Min",  "Max", "Pos", "Norm");
         for (int i = 0; i < objs.Length; i++) {
             DrawRow(objs[i].scriptname, objs[i].averageMs.ToString("F2"), objs[i].minMs.ToString("F2"), objs[i].maxMs.ToString("F2"), objs[i].positionMs.ToString("F2"), objs[i].normalMs.ToString("F2"));
- 
         }
     }
 
