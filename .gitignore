@@ -40,7 +40,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.aab
-*.unitypackage
+ 
 
  
 *.ide-wal
