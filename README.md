@@ -13,3 +13,6 @@ Core i5 3.5 x 4 Win Editor
 
 Core i5 3.5 x 4 Win Player
 ![Alt text](/Screenshots/WinPLayerCoreI5.jpg?raw=true "Core i5 3.5 x 4 Win Player")
+
+Core i5 3.5 x 4 WebGL
+![Alt text](/Screenshots/WebGLCoreI5.jpg?raw=true "Core i5 3.5 x 4 WebGL")
