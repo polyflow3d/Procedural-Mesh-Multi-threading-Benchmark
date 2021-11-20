@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using Unity.Collections;
 using Unity.Jobs;
 
+[DefaultExecutionOrder(1)]
 public class ClassicMeshApi : MeshAPITestBase {
 
     Vector3[] positions;

@@ -10,16 +10,17 @@ public class MeshAPITestBase : MonoBehaviour
     protected Stopwatch positionsw;
     protected Stopwatch normalssw;
 
-
     public Material mat;
-    public float updateMs;
-    public float minMs;
-    public float maxMs;
-    public float averageMs;
-    public float positionMs;
-    public float normalMs;
+    public float updateMs = 0;
+    public float minMs = 0;
+    public float maxMs = 0;
+    public float averageMs = 0;
+    public float positionMs = 0;
+    public float normalMs = 0;
     protected int resolution = 220;
     protected Mesh mesh;
+
+# if !UNITY_WEBGL
 
     protected int[] GetTriangles() {
         int quadsCount = resolution * resolution;
@@ -140,5 +141,6 @@ public class MeshAPITestBase : MonoBehaviour
         return result;  
     } 
 
+    #endif
    
 }

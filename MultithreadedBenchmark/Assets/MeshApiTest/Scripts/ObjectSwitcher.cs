@@ -5,21 +5,30 @@ using UnityEngine;
 public class ObjectSwitcher : MonoBehaviour
 {
     public MeshAPITestBase[] objs;
-    GUIStyle style;
+    GUIStyle stylePadLeft;
+    GUIStyle styleCenter;
     string headerInfo;
     public float switchRate = 3;
 
+    [Range(0.5f, 2f)]
+    public float uiScale = 1f;
+
     private void Start() {
-        style = new GUIStyle();
-        style.fontSize = (int)(Screen.dpi/5);
-        style.normal.textColor = Color.white;
-        style.padding = new RectOffset(8, 8, 8, 8);
-        headerInfo = string.Format("Vertices: {0} | Platform: {1} | CPU cores: {2} | CPU Frequency: {3}", objs[0].GetVertsCount(),  Application.platform, SystemInfo.processorCount, SystemInfo.processorFrequency );
+        stylePadLeft = new GUIStyle();
+        stylePadLeft.fontSize = 10;
+        stylePadLeft.normal.textColor = Color.white;
+        stylePadLeft.padding = new RectOffset(8, 8, 8, 8);
+        styleCenter = new GUIStyle(stylePadLeft);
+        styleCenter.alignment = TextAnchor.MiddleCenter;
+        headerInfo = string.Format("Vertices: {0}, Platform: {1}, CPU cores: {2}, CPU Frequency: {3}", objs[0].GetVertsCount(),  Application.platform, SystemInfo.processorCount, SystemInfo.processorFrequency );
     }
 
     // Update is called once per frame
     void Update()
     {
+        int fontSize = (int)(Screen.width / 45 * uiScale);
+        stylePadLeft.fontSize = fontSize;
+        styleCenter.fontSize = fontSize;
         float v = (Time.time % (switchRate * 2))/ (switchRate * 2);
         for (int i = 0; i<objs.Length; i++) {
             float m = 1.0f / (float)objs.Length;
@@ -34,12 +43,37 @@ public class ObjectSwitcher : MonoBehaviour
     }
 
     private void OnGUI() {
-        GUILayout.Label(headerInfo, style);
+        GUILayout.Label(headerInfo, stylePadLeft);
+        DrawRow(" ", "Aver",  "Min",  "Max", "Pos", "Norm");
         for (int i = 0; i < objs.Length; i++) {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(objs[i].scriptname, style, GUILayout.Width(260) );
-            //GUILayout.Label(objs[i].info, style);
-            GUILayout.EndHorizontal();
+            DrawRow(objs[i].scriptname, objs[i].averageMs.ToString("F2"), objs[i].minMs.ToString("F2"), objs[i].maxMs.ToString("F2"), objs[i].positionMs.ToString("F2"), objs[i].normalMs.ToString("F2"));
+ 
         }
+    }
+
+    void DrawRow(string name, string aver, string min, string max, string pos, string norm) {
+        GUILayout.BeginHorizontal();
+
+        float separatorw = Screen.width * 0.02f * uiScale;
+        float columnw = Screen.width * 0.08f * uiScale;
+
+        GUILayout.Label(name, stylePadLeft, GUILayout.Width(Screen.width * 0.27f * uiScale));
+
+        GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
+        GUILayout.Label(aver, styleCenter, GUILayout.Width(columnw));
+
+        GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
+        GUILayout.Label(min, styleCenter, GUILayout.Width(columnw));
+
+        GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
+        GUILayout.Label(max, styleCenter, GUILayout.Width(columnw));
+
+        GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
+        GUILayout.Label(pos, styleCenter, GUILayout.Width(columnw));
+
+        GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
+        GUILayout.Label(norm, styleCenter, GUILayout.Width(columnw));
+
+        GUILayout.EndHorizontal();
     }
 }
