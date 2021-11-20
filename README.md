@@ -1,4 +1,4 @@
-# Procedural-Mesh-Multithreaded-Benchmark
+# Procedural-Mesh-Multithreading-Benchmark
 comparison of different  procedural mesh processing
 - Classic single thread
 - Classic multithreaded
