@@ -13,14 +13,14 @@ public class MeshAPITestBase : MonoBehaviour
     public Material mat;
     public float updateMs = 0;
     public float minMs = 0;
-    public float maxMs = 0;
+    public float maxMs = 1000;
     public float averageMs = 0;
     public float positionMs = 0;
     public float normalMs = 0;
     protected int resolution = 220;
     protected Mesh mesh;
 
-
+    int framesCounter = 0;
 
     protected int[] GetTriangles() {
         int quadsCount = resolution * resolution;
@@ -95,9 +95,16 @@ public class MeshAPITestBase : MonoBehaviour
         updateSW = Stopwatch.StartNew();
         positionsw = Stopwatch.StartNew();
         normalssw = Stopwatch.StartNew();
-        minMs = float.MaxValue;
-        maxMs = float.MinValue;
+        minMs = 1000;
+        maxMs = 0;
         averageMs = -1;
+        framesCounter = 0;
+    }
+
+    public bool warmedUp {
+        get {
+            return framesCounter > 3;
+        }
     }
 
     private void Update() {
@@ -109,25 +116,26 @@ public class MeshAPITestBase : MonoBehaviour
         positionMs = positionsw.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
         positionsw.Reset();
 
-
         normalssw.Start();
         NormalsJob();
         normalssw.Stop();
         normalMs = normalssw.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
         normalssw.Reset();
 
-
-
         updateMs = updateSW.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
         updateSW.Stop();
         updateSW.Reset();
-        minMs = Mathf.Min(minMs, updateMs);
-        maxMs = Mathf.Max(minMs, updateMs);
-        if (averageMs < 0) {
-            averageMs = updateMs;
-        } else {
-            averageMs = Mathf.Lerp(averageMs, updateMs, 0.5f);
+        if (warmedUp) {
+            minMs = Mathf.Min(minMs, updateMs);
+            maxMs = Mathf.Max(maxMs, updateMs);
+            if (averageMs < 0) {
+                averageMs = updateMs;
+            } else {
+                averageMs = Mathf.Lerp(averageMs, updateMs, 0.5f);
+            }
         }
+        framesCounter++;
+
         FillMesh();
         if (mesh != null) {
             mesh.bounds = GetBounds();

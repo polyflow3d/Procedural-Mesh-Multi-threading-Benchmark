@@ -6,6 +6,7 @@ using Unity.Collections;
 using System.Threading; 
 
 public class ClassicThreadedMeshApi : MeshAPITestBase {
+
 #if !UNITY_WEBGL
     public class TClass {
         private Thread thread;
@@ -25,7 +26,6 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
         float timer;
         float mult;
         int resolution;
- 
  
 
         public TClass(int idx, int tcount, Vector2Int[] indices, Vector3[] positions, Vector3[] normals, Color[] colors, int resolution) {
@@ -204,7 +204,7 @@ public class ClassicThreadedMeshApi : MeshAPITestBase {
 
     public override string scriptname {
         get {
-            return "Classic Multithreaded";
+            return "Classic Multithreading";
         }
     }
 #endif

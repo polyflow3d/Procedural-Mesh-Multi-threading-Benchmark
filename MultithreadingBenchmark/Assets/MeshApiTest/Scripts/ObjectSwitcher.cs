@@ -8,7 +8,7 @@ public class ObjectSwitcher : MonoBehaviour
     GUIStyle stylePadLeft;
     GUIStyle styleCenter;
     string headerInfo;
-    public float switchRate = 3;
+    public float switchRate = 4;
 
     [Range(0.5f, 2f)]
     public float uiScale = 1f;
@@ -46,7 +46,11 @@ public class ObjectSwitcher : MonoBehaviour
         GUILayout.Label(headerInfo, stylePadLeft);
         DrawRow(" ", "Aver",  "Min",  "Max", "Pos", "Norm");
         for (int i = 0; i < objs.Length; i++) {
-            DrawRow(objs[i].scriptname, objs[i].averageMs.ToString("F2"), objs[i].minMs.ToString("F2"), objs[i].maxMs.ToString("F2"), objs[i].positionMs.ToString("F2"), objs[i].normalMs.ToString("F2"));
+            if (objs[i].warmedUp) {
+                DrawRow(objs[i].scriptname, objs[i].averageMs.ToString("F2"), objs[i].minMs.ToString("F2"), objs[i].maxMs.ToString("F2"), objs[i].positionMs.ToString("F2"), objs[i].normalMs.ToString("F2"));
+            } else {
+                DrawRow(objs[i].scriptname, "-", "-", "-", "-", "-");
+            }
         }
     }
 
