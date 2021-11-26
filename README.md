@@ -35,3 +35,8 @@ MacOS Editor
 MacOS Player
 
 ![Alt text](/Screenshots/MacosPlayer.jpg?raw=true "MacOS Player")
+
+
+AndroidPlayer 
+
+![Alt text](/Screenshots/AndroidPlayer.jpg?raw=true "Android Player")
