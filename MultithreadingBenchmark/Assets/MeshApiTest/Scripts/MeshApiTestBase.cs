@@ -9,7 +9,8 @@ public class MeshAPITestBase : MonoBehaviour
     Stopwatch updateSW;
     protected Stopwatch positionsw;
     protected Stopwatch normalssw;
-
+    protected Stopwatch fillMeshSW;
+    
     public Material mat;
     public float updateMs = 0;
     public float minMs = 0;
@@ -17,7 +18,8 @@ public class MeshAPITestBase : MonoBehaviour
     public float averageMs = 0;
     public float positionMs = 0;
     public float normalMs = 0;
-    protected int resolution = 220;
+    public float fillMeshMs = 0;
+    protected int resolution = 500;
     protected Mesh mesh;
 
     int framesCounter = 0;
@@ -95,6 +97,7 @@ public class MeshAPITestBase : MonoBehaviour
         updateSW = Stopwatch.StartNew();
         positionsw = Stopwatch.StartNew();
         normalssw = Stopwatch.StartNew();
+        fillMeshSW = Stopwatch.StartNew();
         minMs = 1000;
         maxMs = 0;
         averageMs = -1;
@@ -135,8 +138,12 @@ public class MeshAPITestBase : MonoBehaviour
             }
         }
         framesCounter++;
-
+        fillMeshSW.Start();
         FillMesh();
+        fillMeshSW.Stop();
+        fillMeshMs = fillMeshSW.ElapsedTicks / (float)System.TimeSpan.TicksPerMillisecond;
+        fillMeshSW.Reset();
+
         if (mesh != null) {
             mesh.bounds = GetBounds();
             if (mat != null) {

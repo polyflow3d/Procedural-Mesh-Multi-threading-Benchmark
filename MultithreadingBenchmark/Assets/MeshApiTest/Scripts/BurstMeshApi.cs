@@ -11,7 +11,7 @@ using Unity.Burst;
 public class BurstMeshApi : MeshAPITestBase {
 
     [BurstCompile(CompileSynchronously = true)]
-    struct P_ositionJob : IJobParallelFor {
+    struct P_ositionJob : IJobFor {
         public float mult;
         public float timer;
         NativeArray<Vector2Int> indices;
@@ -40,7 +40,7 @@ public class BurstMeshApi : MeshAPITestBase {
     }
  
     [BurstCompile(CompileSynchronously = true)]
-    struct N_ormalJob : IJobParallelFor {
+    struct N_ormalJob : IJobFor {
         NativeArray<Vector2Int> indices;
 
         [NativeDisableParallelForRestriction]
@@ -118,13 +118,13 @@ public class BurstMeshApi : MeshAPITestBase {
 
     public override void PositionJob() {
         _positionJob.mult = 1f / resolution * size;
-        JobHandle jh = _positionJob.Schedule(positions.Length, 10);
+        JobHandle jh = _positionJob.ScheduleParallel(positions.Length, 64, default);
         jh.Complete();
         _positionJob.timer += Time.deltaTime;
     }
 
     public override void NormalsJob() {
-        JobHandle jhn = _normalJob.Schedule(normals.Length, 10);
+        JobHandle jhn = _normalJob.ScheduleParallel(normals.Length, 64, default);
         jhn.Complete();
     }
 

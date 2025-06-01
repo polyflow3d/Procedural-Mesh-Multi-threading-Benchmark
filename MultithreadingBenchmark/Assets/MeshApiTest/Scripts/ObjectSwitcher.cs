@@ -44,17 +44,17 @@ public class ObjectSwitcher : MonoBehaviour
 
     private void OnGUI() {
         GUILayout.Label(headerInfo, stylePadLeft);
-        DrawRow(" ", "Aver",  "Min",  "Max", "Pos", "Norm");
+        DrawRow(" ", "Aver",  "Min",  "Max", "Pos", "Norm", "Fill");
         for (int i = 0; i < objs.Length; i++) {
             if (objs[i].warmedUp) {
-                DrawRow(objs[i].scriptname, objs[i].averageMs.ToString("F2"), objs[i].minMs.ToString("F2"), objs[i].maxMs.ToString("F2"), objs[i].positionMs.ToString("F2"), objs[i].normalMs.ToString("F2"));
+                DrawRow(objs[i].scriptname, objs[i].averageMs.ToString("F2"), objs[i].minMs.ToString("F2"), objs[i].maxMs.ToString("F2"), objs[i].positionMs.ToString("F2"), objs[i].normalMs.ToString("F2"), objs[i].fillMeshMs.ToString("F2"));
             } else {
-                DrawRow(objs[i].scriptname, "-", "-", "-", "-", "-");
+                DrawRow(objs[i].scriptname, "-", "-", "-", "-", "-", "-");
             }
         }
     }
 
-    void DrawRow(string name, string aver, string min, string max, string pos, string norm) {
+    void DrawRow(string name, string aver, string min, string max, string pos, string norm, string fillMesh) {
         GUILayout.BeginHorizontal();
 
         float separatorw = Screen.width * 0.02f * uiScale;
@@ -77,6 +77,8 @@ public class ObjectSwitcher : MonoBehaviour
         GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
         GUILayout.Label(norm, styleCenter, GUILayout.Width(columnw));
 
+        GUILayout.Label("|", styleCenter, GUILayout.Width(separatorw));
+        GUILayout.Label(fillMesh, styleCenter, GUILayout.Width(columnw));
         GUILayout.EndHorizontal();
     }
 }

@@ -12,7 +12,7 @@ using Unity.Burst.CompilerServices;
 public class BurstMathematicApi : MeshAPITestBase {
 
     [BurstCompile(CompileSynchronously = true)]
-    struct P_ositionJob : IJobParallelFor {
+    struct P_ositionJob : IJobFor {
         public float mult;
         public float timer;
         NativeArray<int2> indices;
@@ -39,7 +39,7 @@ public class BurstMathematicApi : MeshAPITestBase {
     }
  
     [BurstCompile(CompileSynchronously = true)]
-    struct N_ormalJob : IJobParallelFor {
+    struct N_ormalJob : IJobFor {
         NativeArray<int2> indices;
 
         [NativeDisableParallelForRestriction]
@@ -128,16 +128,18 @@ public class BurstMathematicApi : MeshAPITestBase {
  
     }
 
+
     public override void PositionJob() {
         positionJob.mult = 1f / resolution * size;
-        JobHandle jh = positionJob.Schedule(vertices.Length, 100);
+        int n = vertices.Length-1;
+        JobHandle jh = positionJob.ScheduleParallel(vertices.Length, 64,default );
         jh.Complete();
         positionJob.timer += Time.deltaTime;
     }
 
-    public override void NormalsJob() {
-        JobHandle jhn = normalJob.Schedule(vertices.Length, 100);
-        jhn.Complete();
+    public override void NormalsJob() {    
+         JobHandle jh =   normalJob.ScheduleParallel(vertices.Length, 64,default );
+         jh.Complete();
     }
 
     public override void FillMesh() {
