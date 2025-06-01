@@ -8,6 +8,10 @@ comparison of different  procedural mesh processing
 WebGL build https://polyflow.xyz/web-gl/multithreading-benchmark/
 
 
+11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz   2.50 Build
+
+![Alt text](/Screenshots/Win_i7_11700F_2_50GHz.jpg?raw=true "11th Gen Intel(R) Core(TM) i7-11700F @ 2.50GHz   2.50 Build")
+
 Core i5 3.5 x 4 Win Editor
 
 ![Alt text](/Screenshots/WinEditorCoreI5.jpg?raw=true "Core i5 3.5 x 4 Win Editor")

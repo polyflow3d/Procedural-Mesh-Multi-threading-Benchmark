@@ -19,7 +19,7 @@ public class MeshAPITestBase : MonoBehaviour
     public float positionMs = 0;
     public float normalMs = 0;
     public float fillMeshMs = 0;
-    protected int resolution = 500;
+    protected int resolution = 220;
     protected Mesh mesh;
 
     int framesCounter = 0;
